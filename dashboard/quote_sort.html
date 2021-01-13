@@ -1,0 +1,355 @@
+<!doctype html>
+<html lang="zh-tw" class="h-100">
+{% load static %}
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="期貨市場的商品多樣，包含指數、匯率、利率、農產品、能源、金屬等。投資人可藉由統一期貨的商品看盤平台，配合事件分析研究平台的多元資訊，判斷不同商品的進場時機。">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>統一期貨-漲跌排行</title><!-- 為每個頁面設定唯一的標題 -->
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <!-- google fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC&display=swap" rel="stylesheet">
+    <!-- common CSS -->
+    <link rel="stylesheet" type="text/css" href="{% static 'css/common.css' %}">
+    <!-- fontawesome icon -->
+    <script defer src="https://use.fontawesome.com/releases/v5.0.10/js/all.js" integrity="sha384-slN8GvtUJGnv6ca26v8EzVaR9DC58QEwsIk9q1QXdCU8Yu8ck/tL/5szYlBbqmS+" crossorigin="anonymous"></script>
+    <style>
+
+            #div1{
+        width: 300px;
+        float: left;
+        margin-right: 20px; 
+      }
+      #div2{
+        width: 300px;
+        float: left;
+        margin-right: 20px; 
+      }
+            #div3{
+        width: 300px;
+        float: left;
+        margin-right: 20px; 
+      }
+
+    </style>
+
+  </head>
+  <body class="d-flex flex-column h-100">
+  <!-- 導覽列 -->
+  {% include header %}
+  <!-- 導覽列結束 -->
+
+
+
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/modules/data.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script src="https://code.highcharts.com/modules/export-data.js"></script>
+
+<!-- Begin page content -->
+<main role="main" class="flex-shrink-0">
+  <div class="container">
+ <div class="d-flex align-items-center p-3 my-3 text-black-50 rounded shadow-sm">
+    <div class="lh-100">
+      <h5><i class="fa fa-chart-bar" style="color: #e60012"></i><B> 期貨商品漲跌排行 </B></h5>
+      <small style="color:orange" >LeaderBoard</small>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+    <div id="div1">
+    <div id="rankbar" style="min-width: 100px; width:300px; height: 400px; margin: 0"></div>
+
+
+<div style="width:250px">
+<table id="datatable" class="table table-hover table-sm">
+    <thead>
+        <tr>
+            <th></th>
+            <th>漲跌幅</th>
+            <th>收盤價</th>
+        </tr>
+    </thead>
+    <tbody id="t_equityindex">
+
+    </tbody>
+</table>
+</div>
+</div>
+
+<div id="div2">
+<div id="rankbar2" style="min-width: 100px; width:300px; height: 400px; margin: 0"></div>
+
+
+<div style="width:250px">
+<table id="datatable2" class="table table-hover table-sm">
+    <thead>
+        <tr>
+            <th></th>
+            <th>漲跌幅</th>
+            <th>收盤價</th>
+        </tr>
+    </thead>
+    <tbody id="t_fx">
+        
+    </tbody>
+</table>
+</div>
+</div>
+
+<div id="div3">
+<div id="rankbar3" style="min-width: 100px; width:300px; height: 400px; margin: 0"></div>
+
+
+<div style="width:250px">
+<table id="datatable3" class="table table-hover table-sm">
+    <thead>
+        <tr>
+            <th></th>
+            <th>漲跌幅</th>
+            <th>收盤價</th>
+        </tr>
+    </thead>
+    <tbody id="t_agricultural">
+       
+    </tbody>
+</table>
+</div>
+</div>
+
+  </div>
+    <div class="row">
+    <div class="col">
+    <div id="div1">
+    <div id="rankbar4" style="min-width: 100px; width:300px; height: 400px; margin: 0"></div>
+
+
+<div style="width:250px">
+<table id="datatable4" class="table table-hover table-sm">
+    <thead>
+        <tr>
+            <th></th>
+            <th>漲跌幅</th>
+            <th>收盤價</th>
+        </tr>
+    </thead>
+    <tbody id="t_energy">
+        
+    </tbody>
+</table>
+</div>
+</div>
+
+<div id="div2">
+<div id="rankbar5" style="min-width: 100px; width:300px; height: 400px; margin: 0"></div>
+
+
+<div style="width:250px">
+<table id="datatable5" class="table table-hover table-sm">
+    <thead>
+        <tr>
+            <th></th>
+            <th>漲跌幅</th>
+            <th>收盤價</th>
+        </tr>
+    </thead>
+    <tbody id="t_metals">
+        
+    </tbody>
+</table>
+</div>
+</div>
+
+<div id="div3">
+<div id="rankbar6" style="min-width: 100px; width:300px; height: 400px; margin: 0"></div>
+
+
+<div style="width:250px">
+<table id="datatable6" class="table table-hover table-sm">
+    <thead>
+        <tr>
+            <th></th>
+            <th>漲跌幅</th>
+            <th>收盤價</th>
+        </tr>
+    </thead>
+    <tbody id="t_interestrates">
+       
+    </tbody>
+</table>
+</div>
+</div>
+
+  </div>
+<script type="text/javascript">
+    Highcharts.getJSON("{% url 'home_page' 'sort' %}", function (data) {
+
+         var chart = Highcharts.chart('rankbar', {
+
+            title: {
+                text: '指數期貨排行'
+            },
+        /*
+            subtitle: {
+                text: 'Plain'
+            },
+        */
+            xAxis: {
+                categories: data.quote.equityindex.symbol
+            },
+
+            series: [{
+                type: 'column',
+                colorByPoint: true,
+                data: data.quote.equityindex.pct,
+                showInLegend: false
+            }]
+
+        });
+            var chart = Highcharts.chart('rankbar2', {
+
+                 title: {
+                    text: '匯率期貨排行'
+                    },
+
+            xAxis: {
+                categories: data.quote.fx.symbol
+                },
+
+            series: [{
+                    type: 'column',
+                    colorByPoint: true,
+                    data: data.quote.fx.pct,
+                    showInLegend: false
+            }]
+
+        });
+            var chart = Highcharts.chart('rankbar3', {
+
+                 title: {
+                   text: '商品期貨排行'
+                    },
+
+            xAxis: {
+                categories: data.quote.agricultural.symbol
+                },
+
+            series: [{
+                    type: 'column',
+                    colorByPoint: true,
+                    data: data.quote.agricultural.pct,
+                    showInLegend: false
+    }]
+
+        });
+           
+
+ var chart = Highcharts.chart('rankbar4', {
+
+    title: {
+        text: '能源期貨排行'
+    },
+    xAxis: {
+        categories: data.quote.energy.symbol
+    },
+
+    series: [{
+        type: 'column',
+        colorByPoint: true,
+        data: data.quote.energy.pct,
+        showInLegend: false
+    }]
+
+});
+
+ var chart = Highcharts.chart('rankbar5', {
+
+    title: {
+        text: '金屬期貨排行'
+    },
+    xAxis: {
+        categories: data.quote.metals.symbol
+    },
+
+    series: [{
+        type: 'column',
+        colorByPoint: true,
+        data: data.quote.metals.pct,
+        showInLegend: false
+    }]
+
+});
+
+  var chart = Highcharts.chart('rankbar6', {
+
+    title: {
+        text: '利率期貨排行'
+    },
+    xAxis: {
+        categories: data.quote.interestrates.symbol
+    },
+
+    series: [{
+        type: 'column',
+        colorByPoint: true,
+        data: data.quote.interestrates.pct,
+        showInLegend: false
+    }]
+
+});
+}); 
+</script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script>
+    $(document).ready(function (){
+            $.getJSON('https://deeptrade.pfcf.com.tw/homeapi/sort?format=json', function (data) {             
+              for(var j=0;j<6;j++){
+                var classfy = Object.keys(data.quote)[j]
+                var temp = data.quote[classfy];
+                var tableData=''
+
+                 for(var i=0;i<temp.symbol.length;i++){
+                  var pct_color ='';
+                  var sy = temp.symbol_eg[i]
+                    if (temp.pct[i] > 0 ) {
+                      pct_color+='<font color="red">';
+                    } else if ( temp.pct[i] < 0 ) {
+                      pct_color+='<font color="green">';
+                    }
+                    
+                  tableData+="<tr>"+"<th><a href="+"{% url 'indicator' 'tem' %}>".replace('tem', sy)+temp.symbol[i]+"</a></th>"+"<td>"+pct_color+temp.pct[i]+'%'+"</font></td>"+"<td>"+temp.close[i]+"</td>"+"</tr>"
+                 }
+
+                 $("#t_"+classfy).html(tableData)
+                 console.log("#t_"+classfy)
+            }})
+    })
+</script>
+</main>
+<hr class="featurette-divider"> 
+  <!-- footer -->
+  {% include footer %}
+  <!-- footer結束 -->
+
+
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-160598077-1"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+
+gtag('config', 'UA-160598077-1');
+</script>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+  <script>window.jQuery || document.write('<script src="https://getbootstrap.com/docs/4.3/assets/js/vendor/jquery-slim.min.js"><\/script>')</script><script src="https://getbootstrap.com/docs/4.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-xrRywqdh3PHs8keKZN+8zzc5TX0GRTLCcmivcbNJWm2rs5C8PRhcEn3czEjhAO9o" crossorigin="anonymous"></script>
+  </body>
+</html>

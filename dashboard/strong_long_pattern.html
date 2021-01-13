@@ -1,0 +1,481 @@
+<!doctype html>
+<html lang="zh-tw" class="h-100">
+{% load static %}
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="利用深度學習-卷積神經網路技術(Convolutional Neural Networks)訓練歷史資料線圖，自動偵測辨識出目前海內外期貨商品行情正在發生的型態，投資人可依據自身交易風格，選擇有興趣的商品與型態走勢。">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>統一期貨-AI型態辨識模型</title><!-- 為每個頁面設定唯一的標題 -->
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <!-- google fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC&display=swap" rel="stylesheet">
+    <!-- common CSS -->
+    <link rel="stylesheet" type="text/css" href="{% static 'css/common.css' %}">
+    <!-- fontawesome icon -->
+    <script defer src="https://use.fontawesome.com/releases/v5.0.10/js/all.js" integrity="sha384-slN8GvtUJGnv6ca26v8EzVaR9DC58QEwsIk9q1QXdCU8Yu8ck/tL/5szYlBbqmS+" crossorigin="anonymous"></script>
+    <style>
+
+        /* 圓餅圖css */  
+.highcharts-figure, .highcharts-data-table table {
+    min-width: 320px; 
+    max-width: 500px;
+    margin: 1em auto;
+}
+
+.highcharts-data-table table {
+  font-family: Verdana, sans-serif;
+  border-collapse: collapse;
+  border: 1px solid #EBEBEB;
+  margin: 10px auto;
+  text-align: center;
+  width: 100%;
+  max-width: 400px;
+}
+.highcharts-data-table caption {
+    padding: 1em 0;
+    font-size: 1.2em;
+    color: #555;
+}
+.highcharts-data-table th {
+  font-weight: 600;
+    padding: 0.5em;
+}
+.highcharts-data-table td, .highcharts-data-table th, .highcharts-data-table caption {
+    padding: 0.5em;
+}
+.highcharts-data-table thead tr, .highcharts-data-table tr:nth-child(even) {
+    background: #f8f8f8;
+}
+.highcharts-data-table tr:hover {
+    background: #f1f7ff;
+}
+        /* 圓餅圖css結束 */  
+    </style>
+
+  </head>
+  <body>
+ 
+  <!-- 導覽列 -->
+  {% include header %}
+  <!-- 導覽列結束 -->
+
+
+
+
+  <!--highcharts-->
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+<script src="https://code.highcharts.com/stock/highstock.js"></script>
+<script src="https://code.highcharts.com/stock/modules/exporting.js"></script>
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/export-data.js"></script>
+<script src="https://code.highcharts.com/modules/accessibility.js"></script>
+<script>
+//$.getJSON( "http://127.0.0.1:8080/api/sort/?format=json", function( data ) {
+//  console.log(data);
+//});
+
+$.getJSON("{% url 'ai_long' %}", function (data) {
+
+      Highcharts.setOptions({
+      time: {
+          timezoneOffset: -8*60
+      }
+      });
+      // create the chart
+      Highcharts.stockChart('hicharts0', {
+
+
+          rangeSelector: {
+              selected: 1
+          },
+
+          title: {
+              text: data.stronglong1.stock_name
+          },
+
+          series: [{
+              type: 'candlestick',
+              name: data.stronglong1.stock_name,
+              data: data.stronglong1.data,
+              dataGrouping: {
+                  units: [
+                      [
+                          'day', // unit name
+                          [1] // allowed multiples
+                      ], [
+                          'month',
+                          [1, 2, 3, 4, 6]
+                      ]
+                  ]
+              }
+          }]
+      });
+
+      Highcharts.stockChart('hicharts1', {
+
+
+          rangeSelector: {
+              selected: 1
+          },
+
+          title: {
+              text: data.stronglong2.stock_name
+          },
+
+          series: [{
+              type: 'candlestick',
+              name: data.stronglong2.stock_name,
+              data: data.stronglong2.data,
+              dataGrouping: {
+                  units: [
+                      [
+                          'day', // unit name
+                          [1] // allowed multiples
+                      ], [
+                          'month',
+                          [1, 2, 3, 4, 6]
+                      ]
+                  ]
+              }
+          }]
+      });     
+
+      Highcharts.stockChart('hicharts2', {
+
+
+          rangeSelector: {
+              selected: 1
+          },
+
+          title: {
+              text: data.stronglong3.stock_name
+          },
+
+          series: [{
+              type: 'candlestick',
+              name: data.stronglong3.stock_name,
+              data: data.stronglong3.data,
+              dataGrouping: {
+                  units: [
+                      [
+                          'day', // unit name
+                          [1] // allowed multiples
+                      ], [
+                          'month',
+                          [1, 2, 3, 4, 6]
+                      ]
+                  ]
+              }
+          }]
+      });
+        });
+
+</script>
+
+<!--highcharts-->
+<main role="main" class="flex-shrink-0">
+
+  <section class="jumbotron text-center" style="background-image:url({% static 'img/regnition/ai_banner01.png' %}) ; background-size:100%;">
+    <div class="container">
+      <h1 class="jumbotron-heading" style="color:#FFFFFF">AI型態辨識模型</h1>
+      <p style="color: #ffffff">利用深度學習-卷積神經網路技術訓練歷史資料線圖，自動偵測辨識出目前海內外期貨商品行情正在發生的型態</p>
+      <p>
+
+      </p>
+    </div>
+  </section>
+
+    <div class="container">
+
+
+    <div class="row">
+      <div class="col-md-6">
+            <div id="hicharts0" style="height: 400px; min-width: 310px"></div>
+      </div>
+      <div class="col-md-6"><figure class="highcharts-figure">
+    <div id="pie0"></div>
+</figure>
+
+<table class="table table-hover">
+  <thead>
+    <tr>
+      <th scope="col">日期</th>
+      <th scope="col">外資</th>
+      <th scope="col">投信</th>
+      <th scope="col">自營商</th>
+      <th scope="col">總計</th>
+    </tr>
+  </thead>
+  <tbody id="t_stronglong1">
+
+  </tbody>
+</table>
+
+</div>
+    </div>
+<hr class="featurette-divider"> 
+
+    <div class="row">
+      <div class="col-md-6">
+            <div id="hicharts1" style="height: 400px; min-width: 310px"></div>
+      </div>
+      <div class="col-md-6"><figure class="highcharts-figure">
+    <div id="pie1"></div>
+</figure>
+<table class="table table-hover">
+  <thead>
+    <tr>
+      <th scope="col">日期</th>
+      <th scope="col">外資</th>
+      <th scope="col">投信</th>
+      <th scope="col">自營商</th>
+      <th scope="col">總計</th>
+    </tr>
+  </thead>
+  <tbody id="t_stronglong2">
+
+  </tbody>
+</table></div>
+    </div>
+<hr class="featurette-divider"> 
+
+    <div class="row">
+      <div class="col-md-6">
+            <div id="hicharts2" style="height: 400px; min-width: 310px"></div>
+      </div>
+      <div class="col-md-6"><figure class="highcharts-figure">
+    <div id="pie2"></div>
+
+</figure>
+<table class="table table-hover">
+  <thead>
+    <tr>
+      <th scope="col">日期</th>
+      <th scope="col">外資</th>
+      <th scope="col">投信</th>
+      <th scope="col">自營商</th>
+      <th scope="col">總計</th>
+    </tr>
+  </thead>
+  <tbody id="t_stronglong3">
+
+  </tbody>
+</table></div>
+    </div>
+  </div>
+
+<script>
+    $(document).ready(function (){
+            $.getJSON("{% url 'chips' %}", function (data) {
+              var classfy = Object.keys(data);
+              console.log(data);
+              for(var i=0;i<3;i++){
+              	var chips_table ='';
+              	var temp = 1;
+              	temp = data[classfy[i]];
+	            for(var j=0;j<3;j++){
+	              	var tableData="<tr>";
+	              	var temp_color ='';
+	              	for(var k=0;k<5;k++){
+	              		if (k == 0){
+	              			var date = temp[j][k].toString();
+	              			date = date.substring(4,6) +"/"+date.substring(6,8);
+	              			temp_color+='<td><font color="black">'+date+"</font></td>";
+	              			console.log(temp_color);
+	              		} else if (k > 0){
+		                	if (temp[j][k] < 0 ) {
+		                      temp_color+='<td><font color="red">'+temp[j][k]+"</font></td>";
+		                    } else if ( temp[j][k] >= 0 ) {
+		                      temp_color+='<td><font color="black">'+temp[j][k]+"</font></td>";
+		                    }
+	                	}
+	            	}
+	            	tableData+=temp_color;
+	                tableData+="</tr>";
+	                chips_table+=tableData;              
+	            }
+	            $("#t_"+classfy[i]).html(chips_table)
+          }})
+        })    
+</script>
+
+
+<script type="text/javascript"> // Make monochrome colors
+var pieColors = (function () {
+    var colors = [],
+        base = Highcharts.getOptions().colors[0],
+        i;
+
+    for (i = 0; i < 10; i += 1) {
+        // Start out with a darkened base color (negative brighten), and end
+        // up with a much brighter color
+        colors.push(Highcharts.Color(base).brighten((i - 3) / 7).get());
+    }
+    return colors;
+}());
+
+// Build the chart
+Highcharts.chart('pie0', {
+    chart: {
+        plotBackgroundColor: null,
+        plotBorderWidth: null,
+        plotShadow: false,
+        type: 'pie'
+    },
+    title: {
+        text: '三大法人持股比率'
+    },
+    tooltip: {
+        pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+    },
+    accessibility: {
+        point: {
+            valueSuffix: '%'
+        }
+    },
+    plotOptions: {
+        pie: {
+            allowPointSelect: true,
+            cursor: 'pointer',
+            colors: pieColors,
+            dataLabels: {
+                enabled: true,
+                format: '<b>{point.name}</b><br>{point.percentage:.1f} %',
+                distance: -50,
+                filter: {
+                    property: 'percentage',
+                    operator: '>',
+                    value: 4
+                }
+            }
+        }
+    },
+    series: [{
+        name: 'Share',
+        data: [
+            { name: '外資', y: 34.17 },
+            { name: '投信', y: 1.1 },
+            { name: '自營商', y: 0.9 },
+            { name: '其他', y: 63.77 }
+
+        ]
+    }]
+});
+Highcharts.chart('pie1', {
+    chart: {
+        plotBackgroundColor: null,
+        plotBorderWidth: null,
+        plotShadow: false,
+        type: 'pie'
+    },
+    title: {
+        text: '三大法人持股比率'
+    },
+    tooltip: {
+        pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+    },
+    accessibility: {
+        point: {
+            valueSuffix: '%'
+        }
+    },
+    plotOptions: {
+        pie: {
+            allowPointSelect: true,
+            cursor: 'pointer',
+            colors: pieColors,
+            dataLabels: {
+                enabled: true,
+                format: '<b>{point.name}</b><br>{point.percentage:.1f} %',
+                distance: -50,
+                filter: {
+                    property: 'percentage',
+                    operator: '>',
+                    value: 4
+                }
+            }
+        }
+    },
+    series: [{
+        name: 'Share',
+        data: [
+            { name: '外資', y: 34.17 },
+            { name: '投信', y: 1.1 },
+            { name: '自營商', y: 0.9 },
+            { name: '其他', y: 63.77 }
+        ]
+    }]
+});
+Highcharts.chart('pie2', {
+    chart: {
+        plotBackgroundColor: null,
+        plotBorderWidth: null,
+        plotShadow: false,
+        type: 'pie'
+    },
+    title: {
+        text: '三大法人持股比率'
+    },
+    tooltip: {
+        pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+    },
+    accessibility: {
+        point: {
+            valueSuffix: '%'
+        }
+    },
+    plotOptions: {
+        pie: {
+            allowPointSelect: true,
+            cursor: 'pointer',
+            colors: pieColors,
+            dataLabels: {
+                enabled: true,
+                format: '<b>{point.name}</b><br>{point.percentage:.1f} %',
+                distance: -50,
+                filter: {
+                    property: 'percentage',
+                    operator: '>',
+                    value: 4
+                }
+            }
+        }
+    },
+    series: [{
+        name: 'Share',
+        data: [
+            { name: '外資', y: 27.56 },
+            { name: '投信', y: 7.6 },
+            { name: '自營商', y:2.59 },
+            { name: '其他', y: 62.24 }
+        ]
+    }]
+});
+</script>
+
+</main>
+<hr class="featurette-divider"> 
+
+  <!-- footer -->
+{% include footer %}
+  <!-- footer結束 -->
+
+
+  
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-160598077-1"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'UA-160598077-1');
+</script>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+  <script>window.jQuery || document.write('<script src="https://getbootstrap.com/docs/4.3/assets/js/vendor/jquery-slim.min.js"><\/script>')</script><script src="https://getbootstrap.com/docs/4.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-xrRywqdh3PHs8keKZN+8zzc5TX0GRTLCcmivcbNJWm2rs5C8PRhcEn3czEjhAO9o" crossorigin="anonymous"></script>
+  </body>
+</html>

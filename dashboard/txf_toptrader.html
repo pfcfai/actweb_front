@@ -1,0 +1,559 @@
+<!doctype html>
+<html lang="zh-tw">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="多空指標平台提供RSI、威廉指標、KD、MACD，與各期移動平均線等多元技術指標的視覺化分析。判斷有無出現過熱、弱勢等訊號出現，協助投資人了解目前市場概況，提升決策效率。">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>統一期貨-台指大額交易人籌碼</title><!-- 為每個頁面設定唯一的標題 --> 
+
+    <!-- Bootstrap CSS -->
+    <link rel="canonical" href="https://getbootstrap.com/docs/4.3/examples/navbar-fixed/">
+    <link href="https://getbootstrap.com/docs/4.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link href="https://getbootstrap.com/docs/4.3/examples/sticky-footer-navbar/sticky-footer-navbar.css" rel="stylesheet">
+    <!-- google fonts 
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family==Noto+Sans+TC&display=swap">-->
+    <!-- fontawesome icon -->
+    <script defer src="https://use.fontawesome.com/releases/v5.0.10/js/all.js" integrity="sha384-slN8GvtUJGnv6ca26v8EzVaR9DC58QEwsIk9q1QXdCU8Yu8ck/tL/5szYlBbqmS+" crossorigin="anonymous"></script>
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
+<script src="https://code.highcharts.com/modules/export-data.js"></script>
+<script src="https://code.highcharts.com/modules/accessibility.js"></script>
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/series-label.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
+<script src="https://code.highcharts.com/modules/export-data.js"></script>
+<script src="https://code.highcharts.com/modules/accessibility.js"></script>
+<script src="https://code.highcharts.com/themes/high-contrast-light.js"></script>
+    <style>
+
+
+.highcharts-figure, .highcharts-data-table table {
+    min-width: 310px; 
+    max-width: 800px;
+    margin: 1em auto;
+}
+#hicharts1 , #hicharts2 {
+ /*  讓highchart的標題根雙軸不因為zoom圖片的時候被一直反白*/
+  -webkit-user-select:none;
+  -moz-user-select:none;
+  -o-user-select:none;
+  user-select:none;  
+/*  讓highchart的標題根雙軸不因為zoom圖片的時候被一直反白*/
+
+  background-image: url('統一_淡.png');
+  background-repeat: no-repeat;
+  background-position: 85% 16%;
+  background-size: 25%;
+}
+
+#container {
+    height: 400px;
+}
+.highcharts-data-table table {
+  font-family: 微軟正黑體;
+  border-collapse: collapse;
+  border: 1px solid #EBEBEB;
+  margin: 10px auto;
+  text-align: center;
+  width: 100%;
+  max-width: 500px;
+}
+.highcharts-data-table caption {
+    padding: 1em 0;
+    font-size: 1.2em;
+    color: #555;
+}
+.highcharts-data-table th {
+  font-weight: 600;
+    padding: 0.5em;
+}
+.highcharts-data-table td, .highcharts-data-table th, .highcharts-data-table caption {
+    padding: 0.5em;
+}
+.highcharts-data-table thead tr, .highcharts-data-table tr:nth-child(even) {
+    background: #f8f8f8;
+}
+.highcharts-data-table tr:hover {
+    background: #f1f7ff;
+} 
+
+      body{
+        background-color: #FFFAFA;
+        font-family: 'Noto Sans TC regular','Microsoft JhengHei', sans-serif;
+      }
+      .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+      }
+
+      @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+          font-size: 3.5rem;
+        }
+      }
+      td{
+        height: 40px;
+      }
+      header {
+              background-color: #FFFAFA;
+              padding: 30px;
+              text-align: center;
+              font-size: 35px;
+              color: black;
+              }
+      #div1
+      {
+       width:400px;
+       float:left;
+      }
+      #div2
+      {
+      width:400px;
+      float:left;
+      margin-left: 1%;
+      }
+
+
+/* 儀錶板 */
+      .outer {
+  width: 600px;
+  height: 200px;
+  margin: 0 auto;
+}
+.outer .chart-container {
+  width: 300px;
+  float: left;
+  height: 200px;
+}
+.highcharts-yaxis-grid .highcharts-grid-line {
+  display: none;
+}
+
+@media (max-width: 600px) {
+  .outer {
+    width: 100%;
+    height: 400px;
+  }
+  .outer .chart-container {
+    width: 300px;
+    float: none;
+    margin: 0 auto;
+  }
+}
+/* 儀錶板結束 */
+      a:link {
+        color: #959696;
+      }
+      a:visited {
+        color: #959696;
+      }
+      a:hover {
+        color:#F7984B;
+      }
+
+    </style>
+    <!-- Custom styles for this template -->
+    <link href="https://getbootstrap.com/docs/4.3/examples/sticky-footer-navbar/sticky-footer-navbar.css" rel="stylesheet">
+  <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+  <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+ 
+
+  </head>
+  <body class="d-flex flex-column h-100">
+    
+  <!-- 導覽列 -->
+  {% include header %}
+  <!-- 導覽列結束 -->
+
+
+<!-- Begin page content -->
+<main role="main" class="flex-shrink-0">
+  <div class="container">
+  <div class="d-flex align-items-center p-3 my-3 text-black-50 rounded shadow-sm">
+    <div class="lh-100">
+      <h5><i class="fas fa-chart-line" style="color: #e60012"></i><B> 台指期三大法人交易狀況 </B></h5>
+      <small style="color:orange">Technical Indicators</small>
+    </div>
+  </div><br><br>
+
+<div class="container">
+        <div id="hicharts1"  style=" height: 600px; margin: 0 auto;"></div>
+</div><br><hr><br>
+
+
+
+<div class="container">
+        <div id="hicharts2" style="height: 600px; margin: 0 auto"></div>
+</div><br><hr><br>
+
+
+
+<script type="text/javascript">
+
+Highcharts.theme = {
+    colors: ['#090909', '#f7a35c', '#2EDB1F', '#F20400', '#aaeeee', '#ff0066',
+        '#eeaaee', '#55BF3B', '#DF5353', '#7798BF', '#aaeeee'],
+    chart: {
+        backgroundColor: null,
+        style: {
+            fontFamily: '微軟正黑體'
+        }
+    },
+    title: {
+        style: {
+            fontFamily: '微軟正黑體',
+            margin:'100px',
+            fontSize: '25px',
+            fontWeight: 'bold',
+            textTransform: 'uppercase'
+        }
+    },
+    subtitle: {
+        style: {
+            fontFamily: '微軟正黑體',
+            fontSize: '15px',
+            fontWeight: 'bold',
+            textTransform: 'uppercase'
+        }
+    },    
+    tooltip: {
+        borderWidth: 0,
+        backgroundColor: 'rgba(219,219,216,0.8)',
+        shadow: false
+    },
+    legend: {
+        fontWeight: 'bold',
+        fontFamily: '微軟正黑體',
+        itemStyle: {
+        fontWeight: 'bold',
+        fontSize: '15px'
+        }
+    },
+    xAxis: {
+        gridLineWidth: 0,
+        labels: {
+            
+            style: {
+              fontFamily: '微軟正黑體',
+              fontWeight: 'bold',
+              fontSize: '15px'
+            }
+        }
+    },
+    yAxis: {
+        minorTickInterval: 12000,
+        fontWeight: 'bold',
+        fontFamily: '微軟正黑體',
+        title: {
+            style: {
+
+                fontFamily: '微軟正黑體',
+                fontSize: '15px',
+                textTransform: 'uppercase'
+            }
+        },
+        labels: {
+            style: {
+                fontSize: '12px'
+            }
+        }
+    },
+    plotOptions: {
+        candlestick: {
+          fontFamily: '微軟正黑體',
+            lineColor: '#404048'
+        }
+    }
+};
+// Apply the theme
+Highcharts.setOptions(Highcharts.theme);
+$.getJSON("{% url 'Top10traderOi' %}", function (data) {
+Highcharts.chart('hicharts1', {
+
+    chart: {
+        zoomType: 'x'
+    },
+    credits: { enabled:false
+     },   //去掉右下角highchart.com
+    exporting: { enabled:false
+     },   //去掉右上角的打印及导出按钮
+
+
+    title: {
+        text: '台指前十大交易人 / 特定法人'
+    },
+
+    subtitle: {
+        text: ' <a href="http://www.pfcf.com.tw/">Deep Trade - 深度交易 | 統一期貨'
+    },
+    yAxis: {
+        title: {
+            text: '加權指數'
+        }
+    },
+
+    xAxis: {
+      type: 'datetime'
+    },
+    yAxis: [{ // Primary yAxis
+        min: 8200,
+        title: {
+            text: '加權指數'
+        }
+
+    }, { // Secondary yAxis
+        min: -24000,
+        gridLineWidth: 0,
+        title: {
+            text: '口數'
+        },
+        opposite: true
+    }],
+    tooltip: {
+        shared: true
+    },
+   
+    series: [ {
+        name: '十大交易人',
+        type: '',
+        yAxis: 1,
+        data: data.top10trader,
+        color: '#F61805'
+
+    }, {
+        name: '十大特法',
+        type: '',
+        yAxis: 1,
+        data: data.top10special,
+        color: '#1FCA06'
+    },
+    {
+        name: '加權指數',
+        type: 'spline',
+        yAxis: 0,            
+        marker: {
+            enabled: false
+        },
+
+        data: data.twse,
+        dashStyle: 'ShortDashDot',
+        color: '#090909',
+
+    }]
+});
+});
+
+
+Highcharts.theme = {
+    colors: ['#090909', '#f7a35c', '#2EDB1F', '#F20400', '#aaeeee', '#ff0066',
+        '#eeaaee', '#55BF3B', '#DF5353', '#7798BF', '#aaeeee'],
+    chart: {
+        backgroundColor: null,
+        style: {
+            fontFamily: '微軟正黑體'
+        }
+    },
+    title: {
+        style: {
+            fontFamily: '微軟正黑體',
+            margin:'100px',
+            fontSize: '25px',
+            fontWeight: 'bold',
+            textTransform: 'uppercase'
+        }
+    },
+    subtitle: {
+        style: {
+            fontFamily: '微軟正黑體',
+            fontSize: '15px',
+            fontWeight: 'bold',
+            textTransform: 'uppercase'
+        }
+    },    
+    tooltip: {
+        borderWidth: 0,
+        backgroundColor: 'rgba(219,219,216,0.8)',
+        shadow: false
+    },
+    legend: {
+        fontWeight: 'bold',
+        fontFamily: '微軟正黑體',
+        itemStyle: {
+        fontWeight: 'bold',
+        fontSize: '15px'
+        }
+    },
+    xAxis: {
+        gridLineWidth: 0,
+        labels: {
+            
+            style: {
+              fontFamily: '微軟正黑體',
+              fontWeight: 'bold',
+              fontSize: '15px'
+            }
+        }
+    },
+    yAxis: {
+        minorTickInterval: 12000,
+        fontWeight: 'bold',
+        fontFamily: '微軟正黑體',
+        title: {
+            style: {
+
+                fontFamily: '微軟正黑體',
+                fontSize: '15px',
+                textTransform: 'uppercase'
+            }
+        },
+        labels: {
+            style: {
+                fontSize: '12px'
+            }
+        }
+    },
+    plotOptions: {
+        candlestick: {
+          fontFamily: '微軟正黑體',
+            lineColor: '#404048'
+        }
+    }
+};
+// Apply the theme
+Highcharts.setOptions(Highcharts.theme);
+var colors = Highcharts.getOptions().colors;
+$.getJSON("{% url 'ThreemanOi' %}", function (data) {
+Highcharts.chart('hicharts2', {
+
+    chart: {
+        zoomType: 'x'
+    },
+    credits: { enabled:false
+     },   //去掉右下角highchart.com
+    exporting: { enabled:false
+     },   //去掉右上角的打印及导出按钮
+
+
+    title: {
+        text: '三大法人淨留倉部位'
+    },
+
+    subtitle: {
+        text: ' <a href="http://www.pfcf.com.tw/">Deep Trade - 深度交易 | 統一期貨'
+    },
+    yAxis: {
+        title: {
+            text: '加權指數'
+        }
+    },
+
+    xAxis: {
+      type: 'datetime'
+    },
+    yAxis: [{ // Primary yAxis
+        // min: 8200,
+        title: {
+            text: '加權指數'
+        }
+
+    }, { // Secondary yAxis
+        // min: -24000,
+        gridLineWidth: 0,
+        title: {
+            text: '口數'
+        },
+        opposite: true
+    }],
+    tooltip: {
+        shared: true
+    },
+   
+    series: [  {
+        name: '三大法人合計',
+        type: '',
+        yAxis: 1,            
+        marker: {
+            enabled: false
+        },
+        data: data.all,
+            color: colors[1]
+    },{
+        name: '外資',
+        type: '',
+        yAxis: 1,            
+        marker: {
+            enabled: false
+        },
+        data: data.foreign,
+            // dashStyle: 'ShortDash',
+            color: colors[3]
+
+    }, {
+        name: '自營商',
+        type: '',
+        yAxis: 1,            
+        marker: {
+            enabled: false
+        },
+        data: data.dealer,
+            // dashStyle: 'ShortDashDot',
+            color: colors[7]
+    },  {
+        name: '投信',
+        type: '',
+        yAxis: 1,            
+        marker: {
+            enabled: false
+        },
+        data: data.investment,
+            // dashStyle: 'Dash',
+            color: colors[9]
+    }, {
+        name: '加權指數',
+        type: 'spline',
+        yAxis: 0,            
+        marker: {
+            enabled: false
+        },
+
+        data: data.twse,
+        dashStyle: 'ShortDashDot',
+            color: colors[0]
+
+    }]
+});
+});
+</script>
+
+
+
+</main>
+
+  <!-- footer -->
+{% include footer %}
+  <!-- footer結束 -->
+
+  
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-160598077-1"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+
+gtag('config', 'UA-160598077-1');
+</script>
+
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+      <script>window.jQuery || document.write('<script src="https://getbootstrap.com/docs/4.3/assets/js/vendor/jquery-slim.min.js"><\/script>')</script><script src="https://getbootstrap.com/docs/4.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-xrRywqdh3PHs8keKZN+8zzc5TX0GRTLCcmivcbNJWm2rs5C8PRhcEn3czEjhAO9o" crossorigin="anonymous"></script>
+    </body>
+</html>
+   
+   

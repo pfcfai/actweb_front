@@ -1,0 +1,613 @@
+<!doctype html>
+<html lang="zh-tw" class="h-100">
+{% load static %}
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="多空指標平台提供RSI、威廉指標、KD、MACD，與各期移動平均線等多元技術指標的視覺化分析。判斷有無出現過熱、弱勢等訊號出現，協助投資人了解目前市場概況，提升決策效率。">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>統一期貨-多空指標</title><!-- 為每個頁面設定唯一的標題 -->
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <!-- google fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC&display=swap" rel="stylesheet">
+    <!-- common CSS -->
+    <link rel="stylesheet" type="text/css" href="{% static 'css/common.css' %}">
+    <!-- fontawesome icon -->
+    <script defer src="https://use.fontawesome.com/releases/v5.0.10/js/all.js" integrity="sha384-slN8GvtUJGnv6ca26v8EzVaR9DC58QEwsIk9q1QXdCU8Yu8ck/tL/5szYlBbqmS+" crossorigin="anonymous"></script>
+
+    <style>
+.highcharts-candlestick-series .highcharts-point {
+stroke: green;
+
+fill: green;
+}
+.highcharts-candlestick-series .highcharts-point-up {
+stroke: red;
+fill: red;
+}
+#container  {
+/*  讓highchart的標題根雙軸不因為zoom圖片的時候被一直反白*/
+  -webkit-user-select:none;
+  -moz-user-select:none;
+  -o-user-select:none;
+  user-select:none;  
+/*  讓highchart的標題根雙軸不因為zoom圖片的時候被一直反白*/
+
+  background-image: url({% static 'img/common/light_logo.png' %});
+  background-repeat: no-repeat;
+  background-position: 90% 30%;
+  background-size: 25%;
+}
+
+      #div1
+      {
+       width:400px;
+       float:left;
+      }
+      #div2
+      {
+      width:400px;
+      float:left;
+      margin-left: 1%;
+      }
+
+
+/* 儀錶板 */
+      .outer {
+  width: 600px;
+  height: 200px;
+  margin: 0 auto;
+}
+.outer .chart-container {
+  width: 300px;
+  float: left;
+  height: 200px;
+}
+.highcharts-yaxis-grid .highcharts-grid-line {
+  display: none;
+}
+
+@media (max-width: 600px) {
+  .outer {
+    width: 100%;
+    height: 400px;
+  }
+  .outer .chart-container {
+    width: 300px;
+    float: none;
+    margin: 0 auto;
+  }
+}
+/* 儀錶板結束 */
+    </style>
+    <!-- Custom styles for this template -->
+    <link href="https://getbootstrap.com/docs/4.3/examples/sticky-footer-navbar/sticky-footer-navbar.css" rel="stylesheet">
+
+  </head>
+  <body class="d-flex flex-column h-100">
+
+  <!-- 導覽列 -->
+  {% include header %}
+  <!-- 導覽列結束 -->
+
+
+<!-- Begin page content -->
+<main role="main" class="flex-shrink-0">
+  <div class="container">
+  <div class="d-flex align-items-center p-3 my-3 text-black-50 rounded shadow-sm">
+    <div class="lh-100">
+      <h5><i class="fas fa-chart-line" style="color: #e60012"></i><B> 技術指標分析 </B></h5>
+      <small style="color:orange">Technical Indicators</small>
+    </div>
+  </div>
+
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+
+
+
+<script src="https://code.highcharts.com/stock/highstock.js"></script>
+<script src="https://code.highcharts.com/stock/modules/data.js"></script>
+<script src="https://code.highcharts.com/stock/modules/exporting.js"></script>
+<script src="https://code.highcharts.com/stock/indicators/indicators.js"></script>
+<script src="https://code.highcharts.com/stock/indicators/wma.js"></script>
+
+<div id="container" style="height: 700px;"></div>
+<script type="text/javascript">
+
+Highcharts.createElement('link', {
+    href: 'https://fonts.googleapis.com/css?family=Signika:400,700',
+    rel: 'stylesheet',
+    type: 'text/css'
+}, null, document.getElementsByTagName('head')[0]);
+Highcharts.theme = {
+
+    colors: ['#f45b5b', '#8085e9', '#8d4654', '#7798BF', '#aaeeee',
+        '#ff0066', '#eeaaee', '#55BF3B', '#DF5353', '#7798BF', '#aaeeee'],
+    chart: {
+        backgroundColor: null,
+        style: {
+            fontFamily: 'Signika, serif'
+        }
+    },
+    title: {
+        style: {
+            fontFamily: '微軟正黑體',
+            margin:'100px',
+            fontSize: '25px',
+            fontWeight: 'bold',
+            textTransform: 'uppercase'
+        }
+    },
+    subtitle: {
+        style: {
+            fontFamily: '微軟正黑體',
+            fontSize: '15px',
+            fontWeight: 'bold',
+            textTransform: 'uppercase'
+        }
+    },    
+    tooltip: {
+        borderWidth: 0,
+        backgroundColor: 'rgba(219,219,216,0.8)',
+        shadow: true
+    },
+    credits: { enabled:false
+     },   //去掉右下角highchart.com
+    exporting: { enabled:false
+     },   //去掉右上角的打印及导出按钮
+
+    tooltip: {
+        backgroundColor: 'rgba(219,219,216,0.8)',
+        shadow: true,    	
+        shape: 'square',
+        headerShape: 'callout',
+        borderWidth: 0,
+        shadow: false,
+        positioner: function (width, height, point) {
+            var chart = this.chart,
+                position;
+
+            if (point.isHeader) {
+                position = {
+                    x: Math.max(
+                        // Left side limit
+                        chart.plotLeft,
+                        Math.min(
+                            point.plotX + chart.plotLeft - width / 2,
+                            // Right side limit
+                            chart.chartWidth - width - chart.marginRight
+                        )
+                    ),
+                    y: point.plotY
+                };
+            } else {
+                position = {
+                    x: point.series.chart.plotLeft,
+                    y: point.series.yAxis.top - chart.plotTop
+                };
+            }
+
+            return position;
+        }
+    },    
+    legend: {
+        backgroundColor: '#E0E0E8',
+        fontWeight: 'bold',
+        fontFamily: '微軟正黑體',
+        itemStyle: {
+        fontWeight: 'bold',
+        fontSize: '15px'
+        }
+
+    },
+    xAxis: {
+        gridLineWidth: 1,
+        labels: {
+            style: {
+                fontSize: '12px'
+            }
+        }
+    },
+    yAxis: {
+        minorTickInterval: 'auto',
+        title: {
+            style: {
+                textTransform: 'uppercase'
+            }
+        },
+        labels: {
+            style: {
+                fontSize: '12px'
+            }
+        }
+    },
+    plotOptions: {
+        series: {
+            shadow: true
+        },
+        candlestick: {
+            lineColor: '#404048'
+        },
+        map: {
+            shadow: false
+        }
+    },
+        rangeSelector: {
+        buttonTheme: {
+            fill: 'white',
+            stroke: '#C0C0C8',
+            'stroke-width': 1,
+            states: {
+                select: {
+                    fill: '#D0D0D8'
+                }
+            }
+        }
+    },
+    scrollbar: {
+        trackBorderColor: '#C0C0C8'
+    }
+};
+
+// Apply the theme
+Highcharts.setOptions(Highcharts.theme);	
+    Highcharts.getJSON("{% url 'get_quote' 'txf' %}", function (data) {
+      Highcharts.setOptions({
+        time: {
+          timezoneOffset: -8*60
+              }});
+    // create the chart
+    Highcharts.stockChart('container', {
+
+         navigation: {
+            bindingsClassName: 'tools-container' // informs Stock Tools where to look for HTML elements for adding technical indicators, annotations etc.
+        },
+
+        stockTools: {
+            gui: {
+                enabled: false // disable the built-in toolbar
+            }
+        },
+        rangeSelector: {
+            selected: 1
+        },
+
+        title: {
+            text: '台灣指數期貨'
+        },
+    	subtitle: {
+        text: ' <a href="http://www.pfcf.com.tw/">Deep Trade - 深度交易 | 統一期貨'
+    	},
+	    yAxis: {
+	        crosshair: true
+	    },    	
+	    xAxis: {
+	        crosshair: true
+	    }, 
+        series: [{
+            type: 'candlestick',
+            name: '台指期',
+            data: data.quote,
+            dataGrouping: {
+                units: [
+                    [
+                        'day', // unit name
+                        [1,5,6] // allowed multiples
+                    ], [
+                        'month',
+                        [1, 2, 3, 6]
+                    ]
+                ]
+            }
+        }]
+    });
+});
+
+    
+</script>
+
+
+<hr class="featurette-divider"> 
+<header></header>
+<script src="https://code.highcharts.com/highcharts-more.js"></script>
+<script src="https://code.highcharts.com/modules/solid-gauge.js"></script>
+<div class="outer">
+  <div class="row justify-content-between">
+    <div id="container-speed" class="chart-container"></div>
+    <div id="container-rpm" class="chart-container"></div>
+  </div>
+</div>
+
+
+<div class="row justify-content-around">
+
+ <div id="div1">
+<H3>擺盪指標</H3>
+<table class="table table-sm table-hover">
+  <thead>
+    <tr>
+      <th scope="col">名稱</th>
+      <th scope="col">值</th>
+      <th scope="col">狀態</th>
+    </tr>
+  </thead>
+  <tbody id = "oscillator">
+    <tr>
+      <td>RSI(6)</td>
+    </tr>
+    <tr>
+      <td>RSI(9)</td>
+    </tr>
+    <tr>
+      <td>RSI(14)</td>
+    </tr>
+    <tr>
+      <td>威廉指標(6)</td>
+    </tr>
+    <tr>
+      <td>威廉指標(9)</td>
+    </tr>
+    <tr>
+      <td>威廉指標(14)</td>
+    </tr>
+    <tr>
+      <td>KD(6)</td>
+    </tr>
+    <tr>
+      <td>KD(9)</td>
+    </tr>
+    <tr>
+      <td>KD(14)</td>
+    </tr>
+    <tr>
+      <td>MACD(12,26,9))</td>
+
+    </tr>
+  </tbody>
+</table>
+</div>
+
+ <div id="div2">
+  <H3>移動平均線</H3>
+<table class="table table-sm table-hover">
+  <thead>
+    <tr>
+      <th scope="col">名稱</th>
+      <th scope="col">值</th>
+      <th scope="col">狀態</th>
+    </tr>
+  </thead>
+  <tbody id = "trend">
+    <tr>
+      <td>SMA(5)</td>
+    </tr>
+    <tr>
+      <td>SMA(10)</td>
+    </tr>
+    <tr>
+      <td>SMA(20)</td>
+    </tr>
+    <tr>
+      <td>SMA(60)</td>
+    </tr>
+    <tr>
+      <td>SMA(120)</td>
+    </tr>
+    <tr>
+      <td>SMA(240)</td>
+    </tr>
+    <tr>
+      <td>EMA(5)</td>
+    </tr>
+    <tr>
+      <td>EMA(10)</td>
+    </tr>
+        <tr>
+      <td>EMA(20)</td>
+    </tr>
+        <tr>
+      <td>EMA(60)</td>
+    </tr>
+        <tr>
+      <td>EMA(120)</td>
+    </tr>
+        <tr>
+      <td>EMA(240)</td>
+    </tr>
+  </tbody>
+  </table>
+</div>
+</div>
+
+  </div>
+  <hr class="featurette-divider"> 
+
+
+</main>
+
+<script type="text/javascript">
+var a =window.location.href;
+var sPage = a.substring(a.lastIndexOf('/') + 1).split(".");
+console.log(sPage[0]);
+$.getJSON("{% url 'trendindicator' 'txf' %}", function (data) {
+var gaugeOptions = {
+
+    chart: {
+        type: 'solidgauge'
+    },
+
+    title: null,
+
+    pane: {
+        center: ['50%', '85%'],
+        size: '140%',
+        startAngle: -90,
+        endAngle: 90,
+        background: {
+            backgroundColor:
+                Highcharts.defaultOptions.legend.backgroundColor || '#EEE',
+            innerRadius: '60%',
+            outerRadius: '100%',
+            shape: 'arc'
+        }
+    },
+
+    tooltip: {
+        enabled: false
+    },
+
+    // the value axis
+    yAxis: {
+        stops: [
+            [0.1, '#55BF3B'], // green
+            [0.5, '#DDDF0D'], // yellow
+            [0.9, '#DF5353'] // red
+        ],
+        lineWidth: 0,
+        minorTickInterval: null,
+        tickAmount: 2,
+        title: {
+            y: -70
+        },
+        labels: {
+            y: 16
+        }
+    },
+
+    plotOptions: {
+        solidgauge: {
+            dataLabels: {
+                y: 5,
+                borderWidth: 0,
+                useHTML: true
+            }
+        }
+    }
+};
+
+// 擺盪指標
+// var chartSpeed = Highcharts.chart('container-speed', Highcharts.merge(gaugeOptions, {
+Highcharts.chart('container-speed', Highcharts.merge(gaugeOptions, {
+    yAxis: {
+        min: -10,
+        max: 10,
+        title: {
+            text: '擺盪指標'
+        }
+    },
+    credits: { enabled:false
+     },   //去掉右下角highchart.com
+    exporting: { enabled:false
+     },   //去掉右上角的打印及导出按钮
+
+    credits: {
+        enabled: false
+    },
+
+    series: [{
+        name: 'Speed',
+        data: data.oscillator['sum'],
+        dataLabels: {
+            format:
+                '<div style="text-align:center">' +
+                '<span style="font-size:25px">{y}</span><br/>' +
+                '<span style="font-size:12px;opacity:0.4">加總</span>' +
+                '</div>'
+        },
+        tooltip: {
+            valueSuffix: ' 加總'
+        }
+    }]
+
+}));
+
+// 移動平均線
+// var chartRpm = Highcharts.chart('container-rpm', Highcharts.merge(gaugeOptions, {
+Highcharts.chart('container-rpm', Highcharts.merge(gaugeOptions, {
+    yAxis: {
+        min: -12,
+        max: 12,
+        title: {
+            text: '移動平均線'
+        }
+    },
+    credits: { enabled:false
+     },   //去掉右下角highchart.com
+    exporting: { enabled:false
+     },   //去掉右上角的打印及导出按钮
+
+    series: [{
+        name: 'RPM',
+        data: data.trend['sum'],
+        dataLabels: {
+            format:
+                '<div style="text-align:center">' +
+                '<span style="font-size:25px">{y}</span><br/>' +
+                '<span style="font-size:12px;opacity:0.4">' +
+                '加總' +
+                '</span>' +
+                '</div>'
+        },
+        tooltip: {
+            valueSuffix: '加總'
+        }
+    }]
+
+}));
+
+
+$('#oscillator').find('tr').each(function(index){
+         var trow = $(this);
+         var indicator = Object.keys(data.oscillator)[index];
+         var temp = data.oscillator[indicator];
+         var pct_color ='';
+         if (temp[0][1] == '過熱' ) {
+              pct_color+='<font color="green">';
+            } else if ( temp[0][1] == '過冷' ) {
+              pct_color+='<font color="red">';
+            }else if ( temp[0][1] == '中立' ) {
+              pct_color+='<font color="black">';
+            }
+             trow.append('<td>'+temp[0][0]+'</td>'+'<td>'+pct_color+temp[0][1]+'</font></td>');
+     });
+$('#trend').find('tr').each(function(index){
+         var trow = $(this);
+         var indicator = Object.keys(data.trend)[index];
+         var temp = data.trend[indicator];
+         var pct_color ='';
+         if (temp[0][1] == '強勢' ) {
+              pct_color+='<font color="red">';
+            } else if ( temp[0][1] == '弱勢' ) {
+              pct_color+='<font color="green">';
+            }
+             trow.append('<td>'+temp[0][0]+'</td>'+'<td>'+pct_color+temp[0][1]+'</font></td>');
+     });
+
+});
+</script>
+ 
+  <!-- footer -->
+  {% include footer %}
+  <!-- footer結束 -->
+
+
+
+  
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-160598077-1"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+
+gtag('config', 'UA-160598077-1');
+</script>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+  <script>window.jQuery || document.write('<script src="https://getbootstrap.com/docs/4.3/assets/js/vendor/jquery-slim.min.js"><\/script>')</script><script src="https://getbootstrap.com/docs/4.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-xrRywqdh3PHs8keKZN+8zzc5TX0GRTLCcmivcbNJWm2rs5C8PRhcEn3czEjhAO9o" crossorigin="anonymous"></script>
+  </body>
+</html>
+   

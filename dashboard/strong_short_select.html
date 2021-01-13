@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="zh-tw" class="h-100">
+{% load static %}
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="利用深度學習-卷積神經網路技術(Convolutional Neural Networks)訓練歷史資料線圖，自動偵測辨識出目前海內外期貨商品行情正在發生的型態，投資人可依據自身交易風格，選擇有興趣的商品與型態走勢。">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>強趨勢-AI型態辨識模型</title><!-- 為每個頁面設定唯一的標題 -->
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <!-- google fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC&display=swap" rel="stylesheet">
+    <!-- common CSS -->
+    <link rel="stylesheet" type="text/css" href="{% static 'css/common.css' %}">
+    <!-- fontawesome icon -->
+    <script defer src="https://use.fontawesome.com/releases/v5.0.10/js/all.js" integrity="sha384-slN8GvtUJGnv6ca26v8EzVaR9DC58QEwsIk9q1QXdCU8Yu8ck/tL/5szYlBbqmS+" crossorigin="anonymous"></script>
+  </head>
+  <body class="d-flex flex-column h-100">
+  <!-- 導覽列 -->
+  {% include header %}
+  <!-- 導覽列結束 -->
+
+
+  <!--highcharts-->
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+<script src="https://code.highcharts.com/stock/highstock.js"></script>
+<script src="https://code.highcharts.com/stock/modules/exporting.js"></script>
+<script>
+//$.getJSON( "http://127.0.0.1:8080/api/sort/?format=json", function( data ) {
+//  console.log(data);
+//});
+$.getJSON("{% url 'ai_short' %}", function (data) {
+
+    Highcharts.setOptions({
+    time: {
+        timezoneOffset: -8*60
+    }
+    });
+    // create the chart
+    Highcharts.stockChart('hicharts0', {
+
+
+        rangeSelector: {
+            selected: 1
+        },
+
+        title: {
+            text: data.strongshort1.stock_name
+        },
+
+        series: [{
+            type: 'candlestick',
+            name: data.strongshort1.stock_name,
+            data: data.strongshort1.data,
+            dataGrouping: {
+                units: [
+                    [
+                        'day', // unit name
+                        [1] // allowed multiples
+                    ], [
+                        'month',
+                        [1, 2, 3, 4, 6]
+                    ]
+                ]
+            }
+        }]
+    });
+
+    Highcharts.stockChart('hicharts1', {
+
+
+        rangeSelector: {
+            selected: 1
+        },
+
+        title: {
+            text: data.strongshort2.stock_name
+        },
+
+        series: [{
+            type: 'candlestick',
+            name: data.strongshort2.stock_name,
+            data: data.strongshort2.data,
+            dataGrouping: {
+                units: [
+                    [
+                        'day', // unit name
+                        [1] // allowed multiples
+                    ], [
+                        'month',
+                        [1, 2, 3, 4, 6]
+                    ]
+                ]
+            }
+        }]
+    });     
+
+    Highcharts.stockChart('hicharts2', {
+
+
+        rangeSelector: {
+            selected: 1
+        },
+
+        title: {
+            text: data.strongshort3.stock_name
+        },
+
+        series: [{
+            type: 'candlestick',
+            name: data.strongshort3.stock_name,
+            data: data.strongshort3.data,
+            dataGrouping: {
+                units: [
+                    [
+                        'day', // unit name
+                        [1] // allowed multiples
+                    ], [
+                        'month',
+                        [1, 2, 3, 4, 6]
+                    ]
+                ]
+            }
+        }]
+    });
+
+});
+</script>
+
+<!--highcharts-->
+<main role="main" class="flex-shrink-0">
+
+  <section class="jumbotron text-center" style="background-image:url({% static 'img/regnition/ai_banner01.png' %}) ; background-size:100%;">
+    <div class="container">
+      <h1 class="jumbotron-heading" style="color:#FFFFFF">AI型態辨識模型</h1>
+      <p style="color: #ffffff">利用深度學習-卷積神經網路技術訓練歷史資料線圖，自動偵測辨識出目前海內外期貨商品行情正在發生的型態</p>
+      <p>
+
+      </p>
+    </div>
+  </section>
+
+
+    <div class="container">
+
+    <div class="row">
+      <div class="col-md-6">
+            <div id="hicharts0" style="height: 400px; min-width: 310px"></div>
+      </div>
+      <div class="col-md-6">
+        <figure class="highcharts-figure">
+              <div id="pie0"></div>
+          </figure>
+
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th scope="col">日期</th>
+                <th scope="col">外資</th>
+                <th scope="col">投信</th>
+                <th scope="col">自營商</th>
+                <th scope="col">總計</th>
+              </tr>
+            </thead>
+            <tbody id="t_strongshort1">
+
+            </tbody>
+          </table>
+      </div>
+    </div>
+<hr class="featurette-divider"> 
+
+    <div class="row">
+      <div class="col-md-6">
+            <div id="hicharts1" style="height: 400px; min-width: 310px"></div>
+      </div>
+      <div class="col-md-6">
+                <figure class="highcharts-figure">
+              <div id="pie0"></div>
+          </figure>
+
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th scope="col">日期</th>
+                <th scope="col">外資</th>
+                <th scope="col">投信</th>
+                <th scope="col">自營商</th>
+                <th scope="col">總計</th>
+              </tr>
+            </thead>
+            <tbody id="t_strongshort2">
+
+            </tbody>
+          </table>
+      </div>
+    </div>
+<hr class="featurette-divider"> 
+
+    <div class="row">
+      <div class="col-md-6">
+            <div id="hicharts2" style="height: 400px; min-width: 310px"></div>
+      </div>
+      <div class="col-md-6">
+                <figure class="highcharts-figure">
+              <div id="pie0"></div>
+          </figure>
+
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th scope="col">日期</th>
+                <th scope="col">外資</th>
+                <th scope="col">投信</th>
+                <th scope="col">自營商</th>
+                <th scope="col">總計</th>
+              </tr>
+            </thead>
+            <tbody id="t_strongshort3">
+     
+            </tbody>
+          </table>
+      </div>
+    </div>
+  </div>
+
+</main>
+<hr class="featurette-divider"> 
+
+
+<script>
+    $(document).ready(function (){
+            $.getJSON("{% url 'chips' %}", function (data) {
+              var classfy = Object.keys(data);
+              for(var i=3;i<6;i++){
+              	var chips_table ='';
+              	var temp = data[classfy[i]];
+              
+	            for(var j=0;j<3;j++){
+	              	var tableData="<tr>";
+	              	var temp_color ='';
+	              	for(var k=0;k<5;k++){
+	              		if (k == 0){
+	              			var date = temp[j][k].toString();
+	              			date = date.substring(4,6) +"/"+date.substring(6,8);
+	              			temp_color+='<td><font color="black">'+date+"</font></td>";
+	              			console.log(temp_color);
+	              		} else if (k > 0){
+		                	if (temp[j][k] < 0 ) {
+		                      temp_color+='<td><font color="red">'+temp[j][k]+"</font></td>";
+		                    } else if ( temp[j][k] >= 0 ) {
+		                      temp_color+='<td><font color="black">'+temp[j][k]+"</font></td>";
+		                    }
+	                	}
+	            	}
+	            	tableData+=temp_color;
+	                tableData+="</tr>";
+	                chips_table+=tableData;              
+	            }
+	            $("#t_"+classfy[i]).html(chips_table)
+          }})
+        })    
+</script>
+
+
+  <!-- footer -->
+  {% include footer %}
+  <!-- footer結束 -->
+
+
+  
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-160598077-1"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+
+gtag('config', 'UA-160598077-1');
+</script>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+  <script>window.jQuery || document.write('<script src="https://getbootstrap.com/docs/4.3/assets/js/vendor/jquery-slim.min.js"><\/script>')</script><script src="https://getbootstrap.com/docs/4.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-xrRywqdh3PHs8keKZN+8zzc5TX0GRTLCcmivcbNJWm2rs5C8PRhcEn3czEjhAO9o" crossorigin="anonymous"></script>
+  </body>
+</html>
